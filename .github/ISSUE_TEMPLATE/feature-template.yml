@@ -1,0 +1,55 @@
+name: 🎯 Feature Request
+description: Template for new features and enhancements
+title: "[FEATURE] "
+labels: ["enhancement"]
+assignees: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## 🎯 What & Why
+        Tell us what we're building and why it matters
+  
+  - type: textarea
+    id: what_and_why
+    attributes:
+      label: What & Why
+      description: Describe what we're building and why it matters
+      placeholder: "We need to build X because it will help users do Y..."
+    validations:
+      required: true
+  
+  - type: markdown
+    attributes:
+      value: |
+        ## ✅ Done When
+        Define specific outcomes that mark this feature as complete
+  
+  - type: textarea
+    id: done_when
+    attributes:
+      label: Done When
+      description: List specific outcomes that define completion
+      placeholder: |
+        - [ ] Specific outcome 1
+        - [ ] Specific outcome 2
+        - [ ] Ready for demo
+      value: |
+        - [ ] Specific outcome 1
+        - [ ] Specific outcome 2
+        - [ ] Ready for demo
+    validations:
+      required: true
+  
+  - type: markdown
+    attributes:
+      value: |
+        ## 🎨 Notes
+        Any design, technical considerations, or additional context
+  
+  - type: textarea
+    id: notes
+    attributes:
+      label: Notes
+      description: Any design/technical considerations or additional context
+      placeholder: "Consider using React hooks for state management..."
