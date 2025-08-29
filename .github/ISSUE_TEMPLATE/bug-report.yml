@@ -1,0 +1,57 @@
+name: 🐛 Bug Report
+description: Template for reporting bugs and issues
+title: "[BUG] "
+labels: ["bug"]
+assignees: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## 🐛 Issue
+        Describe what's broken or not working as expected
+  
+  - type: textarea
+    id: issue_description
+    attributes:
+      label: What's broken?
+      description: Clear description of the issue
+      placeholder: "The login button doesn't work when clicked..."
+    validations:
+      required: true
+  
+  - type: markdown
+    attributes:
+      value: |
+        ## 🔄 Steps to Reproduce
+        Walk us through the exact steps to reproduce this issue
+  
+  - type: textarea
+    id: reproduction_steps
+    attributes:
+      label: Steps to Reproduce
+      description: Provide step-by-step instructions to reproduce the issue
+      placeholder: |
+        1. Go to the login page
+        2. Enter valid credentials
+        3. Click the login button
+        4. See error message
+      value: |
+        1. Do this
+        2. See problem
+    validations:
+      required: true
+  
+  - type: markdown
+    attributes:
+      value: |
+        ## 💡 Expected Behavior
+        What should happen instead?
+  
+  - type: textarea
+    id: expected_behavior
+    attributes:
+      label: Expected Behavior
+      description: Describe what should happen instead
+      placeholder: "User should be logged in and redirected to dashboard..."
+    validations:
+      required: true
