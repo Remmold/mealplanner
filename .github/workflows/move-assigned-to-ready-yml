@@ -1,0 +1,16 @@
+name: Move Assigned Issues to Ready
+
+on:
+  issues:
+    types: [assigned]
+
+jobs:
+  move-to-ready:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Move assigned issue to Ready
+        uses: alex-page/github-project-automation-plus@v0.8.3
+        with:
+          project: "mealplanner-canban"  # Replace with your actual project name
+          column: "Ready"               # Replace with your Ready column name
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
