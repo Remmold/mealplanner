@@ -9,8 +9,89 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Move assigned issue to Ready
-        uses: alex-page/github-project-automation-plus@v0.8.3
-        with:
-          project: "mealplanner-canban"  # Replace with your actual project name
-          column: "Ready"               # Replace with your Ready column name
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ISSUE_ID: ${{ github.event.issue.node_id }}
+        run: |
+          # Get the project ID and field ID
+          PROJECT_ID=$(gh api graphql -f query='
+            query($user: String!, $number: Int!) {
+              user(login: $user) {
+                projectV2(number: $number) {
+                  id
+                }
+              }
+            }' -f user="Remmold" -F number=2 --jq '.data.user.projectV2.id')
+          
+          # Get the status field ID
+          STATUS_FIELD_ID=$(gh api graphql -f query='
+            query($projectId: ID!) {
+              node(id: $projectId) {
+                ... on ProjectV2 {
+                  fields(first: 20) {
+                    nodes {
+                      ... on ProjectV2SingleSelectField {
+                        id
+                        name
+                      }
+                    }
+                  }
+                }
+              }
+            }' -f projectId=$PROJECT_ID --jq '.data.node.fields.nodes[] | select(.name=="Status") | .id')
+          
+          # Get the "Ready" option ID
+          READY_OPTION_ID=$(gh api graphql -f query='
+            query($projectId: ID!) {
+              node(id: $projectId) {
+                ... on ProjectV2 {
+                  fields(first: 20) {
+                    nodes {
+                      ... on ProjectV2SingleSelectField {
+                        name
+                        options {
+                          id
+                          name
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }' -f projectId=$PROJECT_ID --jq '.data.node.fields.nodes[] | select(.name=="Status") | .options[] | select(.name=="Ready") | .id')
+          
+          # Get the project item ID for this issue
+          ITEM_ID=$(gh api graphql -f query='
+            query($projectId: ID!, $issueId: ID!) {
+              node(id: $projectId) {
+                ... on ProjectV2 {
+                  items(first: 100) {
+                    nodes {
+                      id
+                      content {
+                        ... on Issue {
+                          id
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }' -f projectId=$PROJECT_ID -f issueId=$ISSUE_ID --jq '.data.node.items.nodes[] | select(.content.id=="'$ISSUE_ID'") | .id')
+          
+          # Update the item status to Ready
+          gh api graphql -f query='
+            mutation($projectId: ID!, $itemId: ID!, $fieldId: ID!, $value: String!) {
+              updateProjectV2ItemFieldValue(input: {
+                projectId: $projectId
+                itemId: $itemId
+                fieldId: $fieldId
+                value: {
+                  singleSelectOptionId: $value
+                }
+              }) {
+                projectV2Item {
+                  id
+                }
+              }
+            }' -f projectId=$PROJECT_ID -f itemId=$ITEM_ID -f fieldId=$STATUS_FIELD_ID -f value=$READY_OPTION_ID
