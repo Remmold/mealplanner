@@ -208,3 +208,10 @@ __marimo__/
 
 # Duckdb
 *.duckdb
+
+# dbt
+target/
+dbt_packages/
+logs/
+warehouse/*.wal
+warehouse/*.tmp
