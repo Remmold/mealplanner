@@ -1,0 +1,15 @@
+mealplanner_dbt:
+  outputs:
+    dev:
+      type: duckdb
+      # Navigate to groceries.duckdb that is one directory up
+      path: ../groceries.duckdb   # one level up, sibling to mealplanner_dbt
+      threads: 1
+
+    # Not decided yet but perhaps snowflake?
+    prod:
+      type: snowflake
+      path: prod.snowflake 
+      threads: 4
+
+  target: dev
