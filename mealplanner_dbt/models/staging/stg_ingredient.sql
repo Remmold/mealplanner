@@ -7,4 +7,4 @@ SELECT
   vikt_efter_tillagning AS weight_post_cooking,
   tillagningsfaktor AS cooking_factor,
   grocery_number AS grocery_id,
-FROM {{ source ('livsmedelsverket', 'raw_grocery_ingredients') }} 
+FROM {{ source ('livsmedelsverket', 'raw_ingredient') }} 

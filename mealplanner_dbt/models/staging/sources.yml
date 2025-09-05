@@ -5,11 +5,11 @@ sources:
     tables:
       - name: raw_grocery
         description: "Food item master from Livsmedelsverket API."
-      - name: raw_grocery_nutrients
+      - name: raw_nutrient
         description: "Nutrient values for a food item."
-      - name: raw_grocery_classifications
+      - name: raw_classification
         description: "Classification categories for a food item."
-      - name: raw_grocery_ingredients
+      - name: raw_ingredient
         description: "Ingredient composition for a food item."
-      - name: raw_grocery_materials
+      - name: raw_material
         description: "Raw agricultural commodities linked to a food item."
