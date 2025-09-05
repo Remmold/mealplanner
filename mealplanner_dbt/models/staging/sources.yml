@@ -1,0 +1,15 @@
+version: 2
+sources:
+  - name: livsmedelsverket
+    schema: raw
+    tables:
+      - name: raw_grocery
+        description: "Food item master from Livsmedelsverket API."
+      - name: raw_grocery_nutrients
+        description: "Nutrient values for a food item."
+      - name: raw_grocery_classifications
+        description: "Classification categories for a food item."
+      - name: raw_grocery_ingredients
+        description: "Ingredient composition for a food item."
+      - name: raw_grocery_materials
+        description: "Raw agricultural commodities linked to a food item."
