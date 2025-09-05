@@ -1,9 +1,19 @@
 import streamlit as st
 from ui.main.components import *
 from ui.sidebar.components import sidebar
+import pathlib
 
 # Main page settings
 st.set_page_config(page_title="Meal Planner", page_icon=":shallow_pan_of_food:", layout="wide")
+
+# Load and inject CSS
+def load_css():
+    css_file = pathlib.Path(__file__).parent / "ui" / "styles.css"
+    with open(css_file) as f:
+        st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+
+# Load CSS first
+load_css()
 
 # Define pages structure
 pages = {
