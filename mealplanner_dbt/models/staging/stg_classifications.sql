@@ -5,4 +5,4 @@ SELECT
   fasettkod AS facet_code,
   fasett AS facet_name,
   typ AS type,
-FROM raw.raw_grocery_classifications
+FROM {{ source ('livsmedelsverket', 'raw_grocery_classifications') }} 
