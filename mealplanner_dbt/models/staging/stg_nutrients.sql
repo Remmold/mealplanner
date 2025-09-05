@@ -10,4 +10,4 @@ SELECT
   matrisenhetkod AS matrix_unit_code,
   berakning AS calculation,
   vardetyp AS value_type,
-FROM raw.raw_grocery_nutrients
+FROM {{ source ('livsmedelsverket', 'raw_grocery_nutrients') }} 

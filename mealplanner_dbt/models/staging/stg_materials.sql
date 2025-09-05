@@ -6,4 +6,4 @@ SELECT
   andel AS final_share,
   faktor AS factor,
   omraknad_till_ra AS raw_share
-FROM raw.raw_grocery_materials
+FROM {{ source ('livsmedelsverket', 'raw_grocery_materials') }} 
