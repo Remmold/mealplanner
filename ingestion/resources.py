@@ -30,7 +30,7 @@ def _api_factory(name, item):
     return d
 
 #naringsvarden /api/v{version}/livsmedel/{nummer}/naringsvarden
-@dlt.resource(table_name="raw_grocery_nutrients", write_disposition="replace")
+@dlt.resource(table_name="raw_nutrient", write_disposition="replace")
 def load_grocery_nutrients():
     """
     Fetches nutritional information for a specific grocery item from Livsmedelsverket.
@@ -41,7 +41,7 @@ def load_grocery_nutrients():
         yield d
 
 # klassificeringar /api/v{version}/livsmedel/{nummer}/klassificeringar
-@dlt.resource(table_name="raw_grocery_classifications", write_disposition="replace")
+@dlt.resource(table_name="raw_classification", write_disposition="replace")
 def load_grocery_classifications():
     """
     Fetches classification information for a specific grocery item from Livsmedelsverket.
@@ -52,7 +52,7 @@ def load_grocery_classifications():
         yield d
 
 # ravaror /api/v{version}/livsmedel/{nummer}/ravaror # materials
-@dlt.resource(table_name="raw_grocery_materials", write_disposition="replace")
+@dlt.resource(table_name="raw_material", write_disposition="replace")
 def load_grocery_materials():
     """
     Fetches material information for a specific grocery item from Livsmedelsverket.
@@ -63,7 +63,7 @@ def load_grocery_materials():
         yield d
 
 #ingredienser /api/v{version}/livsmedel/{nummer}/ingredienser
-@dlt.resource(table_name="raw_grocery_ingredients", write_disposition="replace")
+@dlt.resource(table_name="raw_ingredient", write_disposition="replace")
 def load_grocery_ingredients():
     """
     Fetches ingredient information for a specific grocery item from Livsmedelsverket.
