@@ -10,6 +10,6 @@ sources:
       - name: raw_classification
         description: "Classification categories for a food item."
       - name: raw_ingredient
-        description: "Ingredient composition for a food item."
-      - name: raw_material
-        description: "Raw agricultural commodities linked to a food item."
+        description: "Ingredient composition for a food item (label-level)."
+      - name: raw_component
+        description: "Underlying raw materials/components used for nutrient calculations."

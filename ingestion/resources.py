@@ -51,11 +51,11 @@ def load_grocery_classifications():
         d = _api_factory("klassificeringar", item)
         yield d
 
-# ravaror /api/v{version}/livsmedel/{nummer}/ravaror # materials
-@dlt.resource(table_name="raw_material", write_disposition="replace")
-def load_grocery_materials():
+# ravaror /api/v{version}/livsmedel/{nummer}/ravaror # components / raw materials
+@dlt.resource(table_name="raw_component", write_disposition="replace")
+def load_grocery_components():
     """
-    Fetches material information for a specific grocery item from Livsmedelsverket.
+    Fetches component information for a specific grocery item from Livsmedelsverket.
     """
     data = s.get(url=BASE_URL+"/api/v1/livsmedel", params={"limit": 2600}).json()
     for item in data["livsmedel"]:
@@ -76,5 +76,5 @@ def load_grocery_ingredients():
 # Source handles the order for each resource, wich should run first.. etc
 @dlt.source(name="grocery_api")
 def grocery_resources():
-    return [load_groceries(), load_grocery_nutrients(), load_grocery_classifications(), load_grocery_materials(), load_grocery_ingredients()]
+    return [load_groceries(), load_grocery_nutrients(), load_grocery_classifications(), load_grocery_components(), load_grocery_ingredients()]
 

@@ -1,5 +1,5 @@
 SELECT 
-  nummer AS id,
+  nummer AS number,
   namn AS name,
-  version,
+  version
 FROM {{ source ('livsmedelsverket', 'raw_grocery') }} 
