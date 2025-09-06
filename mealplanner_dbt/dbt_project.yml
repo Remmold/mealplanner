@@ -29,5 +29,12 @@ clean-targets:         # directories to be removed by `dbt clean`
 models:
   mealplanner_dbt:
     +materialized: view
+
     staging:
       schema: staging
+
+    dim:
+      schema: refined
+
+    fct:
+      schema: refined
