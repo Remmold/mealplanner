@@ -15,7 +15,6 @@ header.stAppHeader {
 
 /* Target all element containers */
 div[data-testid="stElementContainer"][width] {
-    width: auto !important;
     max-width: 100% !important;
 }
 
@@ -49,4 +48,12 @@ div[data-testid="stHeadingWithActionElements"] h3 {
 
 .dbt-button:active {
     border-color: rgb(197, 44, 95);
+}
+
+.stTextInput input {
+    background-color: rgb(30, 31, 38) !important;
+    border-color: rgba(255, 255, 255, 0.1) !important;
+    border-style: solid !important;
+    border-width: 1px !important;
+    border-radius: 7px !important;
 }
