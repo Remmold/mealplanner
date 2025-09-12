@@ -14,6 +14,7 @@ dim_nutrient AS (
 SELECT 
     dg.grocery_id,
     dn.nutrient_id,
+    dn.measurement_unit AS nutrient_measurement_unit,
     sn.value          AS nutrient_value,
 FROM stg_nutrient AS sn
 JOIN dim_grocery AS dg on sn.grocery_number = dg.number
