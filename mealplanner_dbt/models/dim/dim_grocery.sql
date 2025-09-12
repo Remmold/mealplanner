@@ -1,3 +1,4 @@
+-- dim_grocery.sql
 WITH stg_grocery AS (
     SELECT * FROM {{ ref ('stg_grocery') }}
 )
