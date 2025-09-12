@@ -1,3 +1,4 @@
+-- fct_grocery_ingredient.sql
 WITH stg_ingredient AS (
     SELECT * FROM {{ ref('stg_ingredient') }}
 ),
@@ -20,4 +21,6 @@ SELECT
     si.yield_factor_name             AS ingredient_yield_factor_name
 FROM stg_ingredient si
 JOIN dim_grocery dg ON si.grocery_number = dg.number
-JOIN dim_ingredient di ON si.name = di.name
+JOIN dim_ingredient di ON 
+                        si.name = di.name and 
+                        si.number = di.number

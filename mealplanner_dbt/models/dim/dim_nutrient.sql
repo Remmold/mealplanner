@@ -1,3 +1,4 @@
+-- dim_nutrient.sql
 WITH stg_nutrient AS (
     SELECT * FROM {{ ref ('stg_nutrient') }}
 )
@@ -5,7 +6,8 @@ WITH stg_nutrient AS (
 SELECT DISTINCT
     {{ dbt_utils.generate_surrogate_key([
     'name',
-    'abbreviation'
+    'abbreviation',
+    'measurement_unit'
     ]) }} AS id,
     name,
     abbreviation,

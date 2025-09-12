@@ -1,3 +1,4 @@
+-- fct_grocery_classification.sql
 WITH stg_classification AS (
     SELECT * FROM {{ ref('stg_classification') }}
 ),
@@ -7,7 +8,7 @@ dim_grocery AS (
 ),
 
 dim_classification AS (
-    SELECT facet_code, id AS classification_id FROM {{ ref('dim_classification') }}
+    SELECT facet_code, facet_name, id AS classification_id FROM {{ ref('dim_classification') }}
 )
 
 SELECT 
@@ -17,4 +18,6 @@ SELECT
     sc.type
 FROM stg_classification sc
 JOIN dim_grocery dg ON sc.grocery_number = dg.number
-JOIN dim_classification dc ON sc.facet_code = dc.facet_code
+JOIN dim_classification dc ON 
+            sc.facet_code = dc.facet_code and
+            sc.facet_name = dc.facet_name
