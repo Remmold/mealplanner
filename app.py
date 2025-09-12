@@ -17,6 +17,9 @@ load_css()
 
 # Define pages structure
 pages = {
+    "Dev" : [
+        st.Page("pages/1_Grocery_Search.py", title="Grocery Search", icon="👾"),
+    ],
     "Main": [
         st.Page("pages/1_Home.py", title="Home", icon="🏠"),
         st.Page("pages/2_My_Recipes.py", title="My Recipes", icon="📖"),
