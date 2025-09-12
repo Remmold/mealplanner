@@ -1,3 +1,4 @@
+-- dim_ingredient.sql
 WITH stg_ingredient AS (
     SELECT * FROM {{ ref ('stg_ingredient') }}
 )
@@ -9,10 +10,4 @@ SELECT DISTINCT
     ]) }} AS id,
     number,
     name,
-    water_weight_change_factor,
-    fat_weight_change_factor,
-    weight_before_cooking,
-    weight_after_cooking,
-    yield_factor_name
-
 FROM stg_ingredient
