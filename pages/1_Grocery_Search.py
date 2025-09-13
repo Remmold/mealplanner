@@ -7,6 +7,7 @@ import os
 import plotly.express as px
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
+from helpers.dataframe_helpers import convert_nutrients_to_grams
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))  # project root
 DB_PATH = os.path.join(BASE_DIR, "groceries.duckdb")
@@ -86,13 +87,19 @@ def grocery_search_content():
             df_nutrients = load_grocery_nutrients(grocery)
 
             if not df_nutrients.empty:
-                df_nutrients["share"] = df_nutrients["nutrient_value"] / df_nutrients["nutrient_value"].sum()
-                df_donut = df_nutrients[df_nutrients["share"] >= 0.02]
-                # Remove energy content from filtered_data
-                kj_index = df_donut[(df_donut.nutrient == 'Energi (kJ)')].index
-                kcal_index = df_donut[(df_donut.nutrient == 'Energi (kcal)')].index
-                df_donut_dropped = df_donut.drop(kj_index)
-                df_donut_dropped = df_donut_dropped.drop(kcal_index)
+                    # This df is ONLY for making the chart.
+                    df_for_chart = convert_nutrients_to_grams(df_nutrients)
+
+                    # calculate share using the dataframe that is all in grams.
+                    df_for_chart["share"] = df_for_chart["nutrient_value"] / df_for_chart["nutrient_value"].sum()
+                    
+                    df_donut = df_for_chart[df_for_chart["share"] >= 0.02]
+                    
+                    # Remove energy content from filtered_data
+                    kj_index = df_donut[(df_donut.nutrient == 'Energi (kJ)')].index
+                    kcal_index = df_donut[(df_donut.nutrient == 'Energi (kcal)')].index
+                    df_donut_dropped = df_donut.drop(kj_index)
+                    df_donut_dropped = df_donut_dropped.drop(kcal_index)
 
             col1, col2 = st.columns(2)
             with col1:
