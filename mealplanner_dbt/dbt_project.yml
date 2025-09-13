@@ -30,11 +30,8 @@ models:
   mealplanner_dbt:
     +materialized: view
 
-    staging:
+    01_staging:
       schema: staging
 
-    dim:
-      schema: refined
-
-    fct:
+    02_refined:
       schema: refined
