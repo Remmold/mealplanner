@@ -35,3 +35,6 @@ models:
 
     02_refined:
       schema: refined
+
+    03_mart:
+      schema: mart
