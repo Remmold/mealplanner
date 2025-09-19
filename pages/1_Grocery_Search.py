@@ -4,22 +4,164 @@ from ui.sidebar.components import sidebar
 import duckdb
 import pandas as pd
 import os
-import plotly.express as px
 import plotly.graph_objects as go
-from plotly.subplots import make_subplots
 from helpers.dataframe_helpers import convert_nutrients_to_grams
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))  # project root
 DB_PATH = os.path.join(BASE_DIR, "groceries.duckdb")
 
+# Mapping of all nutrients available
+NUTRIENT_CATEGORIES = {
+    # --- Macros ---
+    "Protein": "macro",
+    "Fett, totalt": "macro",
+    "Kolhydrater, tillgängliga": "macro",
+    "Fibrer": "macro",
+    "Salt, NaCl": "macro",
+    "Vatten": "macro",
+
+    # --- Energy ---
+    "Energi (kJ)": "energy",
+    "Energi (kcal)": "energy",
+
+    # --- Micronutrients (Vitamins & Minerals) ---
+    "Natrium, Na": "micro",
+    "Magnesium, Mg": "micro",
+    "Kalium, K": "micro",
+    "Zink, Zn": "micro",
+    "Järn, Fe": "micro",
+    "Jod, I": "micro",
+    "Kalcium, Ca": "micro",
+    "Selen, Se": "micro",
+    "Fosfor, P": "micro",
+
+    # Vitamins
+    "Vitamin D": "micro",
+    "Vitamin D inkl 25-OH-D3": "micro",
+    "Tiamin": "micro",   # Vitamin B1
+    "Riboflavin": "micro",  # Vitamin B2
+    "Niacin": "micro",  # Vitamin B3
+    "Niacinekvivalenter": "micro",
+    "Vitamin B6": "micro",
+    "Folat, totalt": "micro",  # B9
+    "Vitamin B12": "micro",
+    "Vitamin C": "micro",
+    "Vitamin A": "micro",
+    "Retinol": "micro",
+    "Betakaroten/β-Karoten": "micro",
+    "Vitamin E": "micro",
+
+    # --- Sub-nutrients (fatty acids, sugars, alcohol, by-products, etc.) ---
+    # Fatty acids
+    "Summa mättade fettsyror": "sub",
+    "Summa enkelomättade fettsyror": "sub",
+    "Summa fleromättade fettsyror": "sub",
+    "Fettsyra 4:0-10:0": "sub",
+    "Laurinsyra C12:0": "sub",
+    "Myristinsyra C14:0": "sub",
+    "Palmitinsyra C16:0": "sub",
+    "Palmitoljesyra C16:1": "sub",
+    "Stearinsyra C18:0": "sub",
+    "Oljesyra C18:1": "sub",
+    "Linolsyra C18:2": "sub",
+    "Linolensyra C18:3": "sub",
+    "Arakidonsyra C20:4": "sub",
+    "Arakidinsyra C20:0": "sub",
+    "EPA (C20:5)": "sub",
+    "DPA (C22:5)": "sub",
+    "DHA (C22:6)": "sub",
+
+    # Sugars
+    "Sockerarter, totalt": "sub",
+    "Monosackarider": "sub",
+    "Disackarider": "sub",
+    "Sackaros": "sub",
+    "Fritt socker": "sub",
+    "Tillsatt socker": "sub",
+
+    # Other
+    "Kolesterol": "sub",
+    "Alkohol": "sub",
+    "Fullkorn totalt": "sub",
+    "Aska": "sub",
+    "Avfall (skal etc.)": "sub",  # non-nutrient but reported
+}
+
+
+def categorize_nutrients(df: pd.DataFrame) -> dict[str, pd.DataFrame]:
+    """Split nutrients into categories based on mapping."""
+    def get_category(nutrient):
+        return NUTRIENT_CATEGORIES.get(nutrient, "micro")
+    
+    df["category"] = df["nutrient"].map(get_category)
+    
+    return {
+        "macros": df[df["category"] == "macro"],
+        "energy": df[df["category"] == "energy"],
+        "subs": df[df["category"] == "sub"],
+        "micros": df[df["category"] == "micro"]
+    }
 
 # Donut chart function
-def create_donut_chart(data, labels: str, values: str):
+def OLD_create_donut_chart(data, labels: str, values: str):
     labels = data[labels]
     values = data[values]
 
     # Use `hole` to create a donut-like pie chart
     fig = go.Figure(data=[go.Pie(labels=labels, values=values, hole=.5)])
+
+    fig.update_layout(
+        legend=dict(
+            orientation="h",
+            yanchor="bottom",
+            y=1.15,
+            xanchor="left",
+            x=0.05,
+        ),
+        width=500,
+        height=500
+    )
+    return fig
+
+def create_donut_chart(data, energy_kcal: float):
+    fig = go.Figure(data=[go.Pie(
+        labels=data["nutrient"],
+        values=data["nutrient_value"],
+        hole=.6
+    )])
+
+    # Add kcal annotation in center
+    if energy_kcal is not None:
+        fig.add_annotation(
+            text=f"{energy_kcal:.0f} kcal",
+            showarrow=False,
+            font=dict(size=16, color="black"),
+            x=0.5, y=0.5
+        )
+
+    fig.update_layout(
+        legend=dict(
+            orientation="h",
+            yanchor="bottom",
+            y=1.15,
+            xanchor="left",
+            x=0.05,
+        ),
+        width=500,
+        height=500
+    )
+    return fig
+
+def create_micro_bar_chart(data):
+    fig = go.Figure(data=[go.Bar(
+        x=data["nutrient_value"],
+        y=data["nutrient"],
+        orientation="h"
+    )])
+    fig.update_layout(
+        title="",
+        height=600
+    )
     return fig
 
 
@@ -50,7 +192,7 @@ def load_grocery_nutrients(grocery_name: str) -> pd.DataFrame:
     WHERE dg.name = ?
     -- AND fgn.nutrient_value != 0
     -- AND nutrient IN ('Energi (kJ)', 'Energi (kcal)', 'Fett, totalt', 'Kolhydrater, tillgängliga', 'Sockerarter, totalt', 'Fibrer', 'Protein', 'Salt, NaCl')
-    ORDER BY dn.name
+    ORDER BY fgn.nutrient_value DESC
     """
     return run_query(query, (grocery_name,))
 
@@ -65,54 +207,54 @@ def grocery_search_page():
 def grocery_search_content():
     with st.container():
         heading("Grocery search")
-        st.write("Welcome to your personal meal planning assistant! Use the navigation menu to:")
-
-        # 1. Load in full df from database table so you can search by typing
+        # Load in all options from grocery table
         options = load_grocery_options()
 
-        # 2. User can search by typing and results will appear live as options
+        # Multiselect-box for searching
         selected_groceries = st.multiselect(
             label="Search groceries",
             options=options,
             key="grocery_multiselect"
         )
         
-        # 3. If a grocery has been selected, a dataframe displaying the
-        # nutrients (per 100g) for the selected grocery is displayed,
-        # together with a pie chart showing the distribution
         if selected_groceries:
-            # Only handle the first selection for now
+            # Only handle the first selection (multiple might not be doable)
             grocery = selected_groceries[0]
 
             df_nutrients = load_grocery_nutrients(grocery)
 
+            # Plot if df_nutrients contains data
             if not df_nutrients.empty:
-                    # This df is ONLY for making the chart.
-                    df_for_chart = convert_nutrients_to_grams(df_nutrients)
+                # Convert to grams
+                df_for_chart = convert_nutrients_to_grams(df_nutrients)
+                
+                # Categorize
+                categorized = categorize_nutrients(df_for_chart)
+                macros = categorized["macros"]
+                energy = categorized["energy"]
+                micros = categorized["micros"]
 
-                    # calculate share using the dataframe that is all in grams.
-                    df_for_chart["share"] = df_for_chart["nutrient_value"] / df_for_chart["nutrient_value"].sum()
-                    
-                    df_donut = df_for_chart[df_for_chart["share"] >= 0.02]
-                    
-                    # Remove energy content from filtered_data
-                    kj_index = df_donut[(df_donut.nutrient == 'Energi (kJ)')].index
-                    kcal_index = df_donut[(df_donut.nutrient == 'Energi (kcal)')].index
-                    df_donut_dropped = df_donut.drop(kj_index)
-                    df_donut_dropped = df_donut_dropped.drop(kcal_index)
+                # Get kcal value as a float
+                energy_row = energy.loc[energy["nutrient"] == "Energi (kcal)", "nutrient_value"]
+                energy_kcal = float(energy_row.iloc[0]) if not energy_row.empty else None
 
-            col1, col2 = st.columns(2)
-            with col1:
-                st.subheader(f"Nutrients per 100g for {grocery}")
-                st.dataframe(df_nutrients, use_container_width=True, hide_index=True)
-            with col2:
-                st.subheader("Nutrient distribution")
-                fig = create_donut_chart(
-                    df_donut_dropped,
-                    labels="nutrient",
-                    values="nutrient_value",
-                    )
-                st.plotly_chart(fig, use_container_width=True)
+                # Layout
+                col1, col2, col3 = st.columns(3)
+                with col1:
+                    # Nutrient dataframe
+                    st.subheader(f"Nutrients per 100g for {grocery}")
+                    st.dataframe(df_nutrients, width="content", hide_index=True)
+                with col2:
+                    # Macronutrient chart
+                    st.subheader("Nutrient distribution")
+                    fig = create_donut_chart(macros, energy_kcal)
+                    st.plotly_chart(fig, use_container_width=True)
+                with col3:
+                    # Micronutrient chart
+                    if not micros.empty:
+                        st.subheader("Micronutrient levels")
+                        fig_micros = create_micro_bar_chart(micros)
+                        st.plotly_chart(fig_micros, use_container_width=True)
 
 
 # Call function to load page
