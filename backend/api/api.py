@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI
 from backend.api.data_processing import json_response
 
 # Initialize the fastapi object
@@ -6,7 +6,7 @@ app = FastAPI()
 
 # Endpoint for getting all groceries
 @app.get("/groceries") 
-def fetch_groceries():
+async def fetch_groceries():
     """
     Fetches id and name of all groceries.
     """
@@ -21,7 +21,7 @@ def fetch_groceries():
     return json_object
     
 @app.get("/groceries/{grocery_id}")
-def fetch_grocery_nutrients(grocery_id: str):
+async def fetch_grocery_nutrients(grocery_id: str):
     """
     Fetches grocery item with its id. 
     """
