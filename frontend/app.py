@@ -1,23 +1,13 @@
 import streamlit as st
-
-# -------------------- KLIPPA ÖREN
-import requests
-
-base_url = "http://127.0.0.1:8000"
-endpoint = "/groceries"
-r = requests.get(url=base_url+endpoint).json()
-
-
-# -------------------- KLIPPA
+from utils import get_list_options,get_nutrients_for_grocery
 
 st.title("Hej och välkomna!")
 
 st.subheader("Välj ett livsmedel du är sugen på att konsumera eller använda!")
 
 # Grocery list to populate selectbox options
-options_list = [
-    x["grocery_name"] for x in r
-]
+r = get_list_options()
+options_list = [x["grocery_name"] for x in r]
 
 # Selectbox for choosing a grocery
 selected_grocery = st.selectbox(
@@ -32,7 +22,5 @@ if selected_grocery:
         x["grocery_id"] for x in r if x["grocery_name"] == selected_grocery
     ][0]
 
-    st.text(selected_id)
-
-with st.expander(label="response output", expanded=False):
-    st.text(r)
+    df = get_nutrients_for_grocery(selected_id=selected_id)
+    st.dataframe(df,hide_index=True)
