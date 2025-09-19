@@ -38,3 +38,4 @@ models:
 
     03_mart:
       schema: mart
+      +materialized: table
