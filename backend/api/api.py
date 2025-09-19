@@ -1,5 +1,4 @@
-from fastapi import FastAPI
-
+from fastapi import FastAPI, HTTPException
 from backend.api.data_processing import json_response
 
 # Initialize the fastapi object
@@ -8,17 +7,34 @@ app = FastAPI()
 # Endpoint for getting all groceries
 @app.get("/groceries") 
 def fetch_groceries():
+    """
+    Fetches id and name of all groceries.
+    """
     query = """
         SELECT DISTINCT
-            number,
+            grocery_id,
             grocery_name,
         FROM mart.mart_grocery_nutrients
+        ORDER BY grocery_name
     """
     json_object = json_response(query=query)
-    # Opens connection to duckdb
     return json_object
     
-
+@app.get("/groceries/{grocery_id}")
+def fetch_grocery_nutrients(grocery_id: str):
+    """
+    Fetches grocery item with its id. 
+    """
+    query = f"""
+        SELECT
+            nutrient_name,
+            nutrient_value,
+            nutrient_measurement_unit
+        FROM mart.mart_grocery_nutrients
+        WHERE grocery_id = '{grocery_id}' 
+        """
+    json_object = json_response(query)    
+    return json_object
 
 if __name__ == "__main__":
     print(type(fetch_groceries()))
