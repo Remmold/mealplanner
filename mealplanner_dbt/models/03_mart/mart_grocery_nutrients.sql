@@ -1,6 +1,6 @@
 WITH mart_grocery_nutrion_menu as ( -- This will be a mart later with dbt 
   SELECT
-    dg.number AS number,
+    fgn.grocery_id AS grocery_id,
     dg.name AS grocery_name,
     dn.name AS nutrient_name,
     dn.abbreviation,
