@@ -1,39 +1,4 @@
 import pandas as pd
-import duckdb
-import os
-
-BASE_DIR = os.path.dirname(os.path.dirname(__file__))  # project root
-DB_PATH = os.path.join(BASE_DIR, "groceries.duckdb")
-
-def load_grocery_nutrients(grocery_name: str) -> pd.DataFrame:
-    query = """
-    SELECT 
-        dn.name AS nutrient,
-        fgn.nutrient_value,
-        fgn.nutrient_measurement_unit
-    FROM refined.fct_grocery_nutrient fgn
-    JOIN refined.dim_grocery dg ON fgn.grocery_id = dg.id
-    JOIN refined.dim_nutrient dn ON fgn.nutrient_id = dn.id
-    WHERE dg.name = ?
-    -- AND fgn.nutrient_value != 0
-    -- AND nutrient IN ('Energi (kJ)', 'Energi (kcal)', 'Fett, totalt', 'Kolhydrater, tillgängliga', 'Sockerarter, totalt', 'Fibrer', 'Protein', 'Salt, NaCl')
-    ORDER BY dn.name
-    """
-    return run_query(query, (grocery_name,))
-def run_query(query: str, params: tuple = None) -> pd.DataFrame:
-    """Run a SQL query against DuckDB and return a DataFrame."""
-    with duckdb.connect(DB_PATH, read_only=True) as conn:
-        if params:
-            return conn.execute(query, params).fetchdf()
-        else:
-            return conn.execute(query).fetchdf()
-        
-
-df = load_grocery_nutrients("Nöt talg")
-
-
-
-import io
 def convert_nutrients_to_grams(df: pd.DataFrame, decimals: int = 6) -> pd.DataFrame:
     """
     Converts nutrient values in a DataFrame to a standardized 'g' unit and rounds them. 
@@ -86,8 +51,3 @@ def convert_nutrients_to_grams(df: pd.DataFrame, decimals: int = 6) -> pd.DataFr
     df_converted = df_converted.drop(columns=['factor'])
 
     return df_converted
-
-
-
-df = convert_nutrients_to_grams(df)
-print(df.value_counts)

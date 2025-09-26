@@ -3,7 +3,7 @@ mealplanner_dbt:
     dev:
       type: duckdb
       # Navigate to groceries.duckdb that is one directory up
-      path: ../groceries.duckdb   # one level up, sibling to mealplanner_dbt
+      path: ../src/mealplanner/backend/data/groceries.duckdb   # data folder inside project package
       threads: 1
 
     # Not decided yet but perhaps snowflake?

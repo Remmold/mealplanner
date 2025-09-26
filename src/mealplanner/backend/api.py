@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from backend.api.data_processing import json_response
+from mealplanner.backend.data_processing import json_response
 
 # Initialize the fastapi object
 app = FastAPI()

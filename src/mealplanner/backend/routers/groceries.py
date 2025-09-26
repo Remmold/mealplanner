@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException, Query
-from backend.models.grocery import Grocery
-from backend.core.db import get_connection
+from mealplanner.backend.models.grocery import Grocery
+from mealplanner.backend.core.db import get_connection
 
 # Create a new APIRouter instance
 # This keeps grocery endpoints modular, so we can include it in main.py
