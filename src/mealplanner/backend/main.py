@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from backend.api.groceries import router as groceries_router
+from mealplanner.backend.routers.groceries import router as groceries_router
 
 # We pass metadata here (title, description, version) that will be used in docs (Swagger)
 app = FastAPI(

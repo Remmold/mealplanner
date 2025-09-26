@@ -1,9 +1,7 @@
 import json
 import duckdb
-from pathlib import Path
 
-DATABASE_NAME = "groceries.duckdb"
-DATA_PATH = Path(__file__).parents[2] / DATABASE_NAME
+from mealplanner.utils.constants import DATA_PATH
 
 # Function for getting a json object from database
 def json_response(query):

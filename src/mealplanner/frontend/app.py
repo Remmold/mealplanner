@@ -1,5 +1,5 @@
 import streamlit as st
-from utils import get_list_options,get_nutrients_for_grocery
+from mealplanner.frontend.api_utils import get_list_options, get_nutrients_for_grocery
 
 st.title("Hej och välkomna!")
 

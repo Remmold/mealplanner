@@ -1,13 +1,11 @@
 import streamlit as st
-from ui.main.components import *
-from ui.sidebar.components import sidebar
 import duckdb
 import pandas as pd
 import os
 import plotly.express as px
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
-from helpers.dataframe_helpers import convert_nutrients_to_grams
+from mealplanner.backend.dataframe_helpers import convert_nutrients_to_grams
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))  # project root
 DB_PATH = os.path.join(BASE_DIR, "groceries.duckdb")
@@ -58,13 +56,12 @@ def load_grocery_nutrients(grocery_name: str) -> pd.DataFrame:
 def grocery_search_page():
     # Debug page
     st.title("Dev page")
-    sidebar()
     grocery_search_content()
 
 # The page content
 def grocery_search_content():
     with st.container():
-        heading("Grocery search")
+        st.header("Grocery search")
         st.write("Welcome to your personal meal planning assistant! Use the navigation menu to:")
 
         # 1. Load in full df from database table so you can search by typing
