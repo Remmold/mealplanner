@@ -1,11 +1,12 @@
-import duckdb
 import dlt
 from resources import grocery_resources
+
+from mealplanner.utils.constants import DATA_PATH
 
 def run_pipeline():
     pipeline = dlt.pipeline(
     pipeline_name="Groceries",
-    destination="duckdb",           # Fix destination
+    destination=dlt.destinations.duckdb(str(DATA_PATH)),
     dataset_name="raw",
     progress="log"
     )
