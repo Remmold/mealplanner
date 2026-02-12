@@ -1,7 +1,7 @@
 # 🥗 MealPlanner
 
-> ⚠️ This project is **under active development** and currently in an early stage.  
-> The goal of MealPlanner is to provide a smart meal planning and nutrition tool that supports families and individuals with different dietary needs, allergies, and preferences.  
+> ⚠️ This project is **Paused**  further development is not guaranteed
+
 
 MealPlanner will combine **recipe management, nutritional overview, shopping list generation**, and **LLM-powered recipe modification** into one app.  
 The long-term vision is to make it easy for households to plan meals together, manage grocery shopping, and adapt recipes to everyone’s needs.
